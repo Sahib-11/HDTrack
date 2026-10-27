@@ -23,3 +23,25 @@ export interface UserProfile {
 }
 
 export type CreateUserProfileInput = Omit<UserProfile, 'createdAt' | 'updatedAt'>
+
+// A Pit Stop location where fans can report queue levels
+export interface PitStop {
+  id: string
+  name: string
+  location: string
+  isActive: boolean
+  _schemaVersion: 1
+}
+
+// Three supported levels of queue congestion
+export type QueueLevel = 'short' | 'moderate' | 'long'
+
+// A queue report submitted by an authenticated fan
+export interface QueueReport {
+  id: string
+  pitStopId: string
+  uid: string
+  level: QueueLevel
+  createdAt: Timestamp
+  _schemaVersion: 1
+}
