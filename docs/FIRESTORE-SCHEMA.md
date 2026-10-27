@@ -72,8 +72,13 @@ Writes are restricted to trusted server/admin operations.
 **Path:** `/queueReports/{reportId}`
 **Purpose:** Stores queue reports submitted by fans.
 
-**Access:** Authenticated users can read reports.
-Creation is handled by validated server-side code.
+**Access:**
+- Authenticated users can read queue reports.
+- Normal report submission uses the validated Next.js Server Action.
+- Direct client creation is permitted only when Firestore
+  security rules validate ownership, fields, timestamp,
+  queue level and an active Pit Stop.
+- Direct client updates and deletes are denied.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
