@@ -22,6 +22,11 @@ export function Navbar() {
       </div>
       <div className="flex-1" />
       <div className="flex items-center gap-3">
+        <Link
+          href="/pit-stop-queues" className="rounded-md px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800 lg:hidden"
+        >
+          Queues
+        </Link>
         {user && <span className="hidden text-sm text-zinc-500 sm:block">{user.email}</span>}
         <Link
           href="/profile"

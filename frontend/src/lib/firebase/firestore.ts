@@ -1,6 +1,6 @@
 import { collection, doc, type CollectionReference, type DocumentData } from 'firebase/firestore'
 import { getClientDb } from './client'
-import type { UserProfile } from '@/types/firestore'
+import type { PitStop, QueueReport, UserProfile } from '@/types/firestore'
 
 /**
  * Creates a typed Firestore collection reference.
@@ -22,4 +22,24 @@ export function getUsersCollection() {
 
 export function userDoc(uid: string) {
   return doc(getUsersCollection(), uid)
+}
+
+
+// Pit Stops
+export function getPitStopsCollection() {
+  return typedCollection<PitStop>('pitStops')
+}
+
+export function pitStopDoc(id: string) {
+  return doc(getPitStopsCollection(), id)
+}
+
+// Queue Reports 
+
+export function getQueueReportsCollection() {
+  return typedCollection<QueueReport>('queueReports')
+}
+
+export function queueReportDoc(id: string) {
+  return doc(getQueueReportsCollection(), id)
 }

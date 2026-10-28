@@ -58,6 +58,60 @@ service cloud.firestore {
 
     // Add new collection rules above this comment using the /firebase-collection skill.
 
+    // ── Pit Stops ────────────────────────────────────
+    // Signed-in users can view locations.
+    // Only trusted admin/server code can modify them.
+    match /pitStops/{pitStopId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if false;
+    }
+
+    // ── Queue Reports ────────────────────────────────
+    match /queueReports/{reportId} {
+
+      // Fans can read reports after signing in.
+      allow read: if isAuthenticated();
+
+      // Permit only properly validated new reports.
+      allow create: if isAuthenticated()
+        && request.resource.data.keys().hasAll([
+          'pitStopId',
+          'uid',
+          'level',
+          'createdAt',
+          '_schemaVersion'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'pitStopId',
+          'uid',
+          'level',
+          'createdAt',
+          '_schemaVersion'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.pitStopId is string
+        && request.resource.data.pitStopId.size() > 0
+        && request.resource.data.pitStopId.size() <= 80
+        && request.resource.data.pitStopId.matches(
+          '^[A-Za-z0-9_-]+$'
+        )
+        && request.resource.data.level in [
+          'short', 'moderate', 'long'
+        ]
+        && request.resource.data._schemaVersion == 1
+        && request.resource.data.createdAt == request.time
+        && exists(
+          /databases/$(database)/documents/pitStops/$(request.resource.data.pitStopId)
+        )
+        && get(
+          /databases/$(database)/documents/pitStops/$(request.resource.data.pitStopId)
+        ).data.isActive == true;
+
+      // Reports cannot be edited or deleted by users.
+      allow update, delete: if false;
+    }
+
+
     // ── Default deny ───────────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;

@@ -47,3 +47,53 @@ This enables **lazy migration** — when a document is read, check `_schemaVersi
 ---
 
 <!-- Add new collection schemas below using the /firebase-collection skill -->
+
+---
+
+## `pitStops` collection
+
+**Path:** `/pitStops/{pitStopId}`
+**Purpose:** Stores available Pit Stop locations.
+
+**Access:** Authenticated users can read locations.
+Writes are restricted to trusted server/admin operations.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| name | string | Yes | Pit Stop name |
+| location | string | Yes | Location description |
+| isActive | boolean | Yes | Whether the Pit Stop is active |
+| _schemaVersion | number (1) | Yes | Schema version |
+
+---
+
+## `queueReports` collection
+
+**Path:** `/queueReports/{reportId}`
+**Purpose:** Stores queue reports submitted by fans.
+
+**Access:**
+- Authenticated users can read queue reports.
+- Normal report submission uses the validated Next.js Server Action.
+- Direct client creation is permitted only when Firestore
+  security rules validate ownership, fields, timestamp,
+  queue level and an active Pit Stop.
+- Direct client updates and deletes are denied.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| pitStopId | string | Yes | Related Pit Stop document ID |
+| uid | string | Yes | Reporting user's Firebase UID |
+| level | string | Yes | short, moderate, or long |
+| createdAt | Timestamp | Yes | Report creation timestamp |
+| _schemaVersion | number (1) | Yes | Schema version |
+
+**Relationship:**
+A Pit Stop can have many queue reports.
+Each queue report belongs to one Pit Stop.
+
+**Notes:**
+- Document IDs are stored as Firestore document IDs.
+- The application will generate report timestamps.
+- Access rules and server validation will be added
+  during implementation.
